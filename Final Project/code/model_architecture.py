@@ -74,8 +74,8 @@ class PosePrediction(nn.Module):
 
   def forward(self,x):
 
-    x = self.fc_Wp1(x)
-    x = self.sigma_r(x)
+    #x = self.fc_Wp1(x)
+    #x = self.sigma_r(x)
     x = self.fc_Wp2(x.transpose(-1,-2)).transpose(-1,-2)
     return x
 

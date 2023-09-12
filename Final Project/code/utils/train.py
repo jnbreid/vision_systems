@@ -2,6 +2,7 @@ from tqdm import tqdm
 import torch
 
 from utils.utils import save_model, load_model
+from utils.eval import eval_model
 
 class Trainer:
 
@@ -90,13 +91,11 @@ class Trainer:
                 self.writer.add_scalar(f'training_loss', loss, global_step = self.iter_)
 
                 if i % self.EVAL_FREQ == 0:
-                    """
-                    euler_angle, mpjpe, geodesic, pck = evaluate(self.model, self.valid_loader, self.criterion, self.device)
-                    self.writer.add_scalar(f'euler_angle', euler_angle, global_step = i)
-                    self.writer.add_scalar(f'mpjpe', mpjpe, global_step = i)
+                    valid_loss, geodesic, eulerangle = eval_model(self.model, self.valid_loader, self.criterion, self.device, metrik = 'angle')
+                    self.writer.add_scalar(f'validation_loss', valid_loss, global_step = i)
+                    self.writer.add_scalar(f'euler_angle', eulerangle, global_step = i)
                     self.writer.add_scalar(f'geodesic', geodesic, global_step = i)
-                    self.writer.add_scalar(f'pck', pck, global_step = i)
-                    """
+                
                     self.model.train()
 
                 if i % self.SAVE_FREQ == 0:
@@ -116,4 +115,14 @@ class Trainer:
                 self.iter_ = self.iter_ + 1
 
             self.scheduler.step()
+
+        save_model(model=self.model,
+                            optimizer = self.optimizer,
+                            epoch = i,
+                            stats = self.stats,
+                            path=self.savepath,
+                            scheduler=self.scheduler,
+                            iteration=self.iter_,
+                            best=False)
+        
         return self.stats, self.model

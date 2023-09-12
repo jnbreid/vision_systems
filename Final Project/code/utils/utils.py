@@ -52,6 +52,14 @@ def load_model(model, optimizer, scheduler, savepath):
 
     return model, optimizer, epoch, stats, iter_
 
+def load_model_stats(model, savepath):
+
+    checkpoint = torch.load(savepath)
+    model.load_state_dict(checkpoint['model_state_dict'])
+    stats = checkpoint["stats"]
+
+    return model, stats
+
 
 def set_random_seed(random_seed=None):
     """
