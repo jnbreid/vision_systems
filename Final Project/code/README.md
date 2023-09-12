@@ -1,0 +1,1 @@
+The example_notebook.ipynb file shows exemplary how a dataset object and model are initialized, and how the model is trained
